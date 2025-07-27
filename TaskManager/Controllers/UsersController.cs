@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,5 +50,42 @@ public class UsersController: Controller
             }
             return View(model);
         }
+    }
+    
+    [AllowAnonymous]
+    public IActionResult Login()
+    {
+        return View();
+    }
+    
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if(!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var result =
+            await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe,
+                lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty,"Nombre de usuario o password incorrectos");
+            return View(model);       
+        }
+        
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        return RedirectToAction("Index", "Home");
     }
 }
