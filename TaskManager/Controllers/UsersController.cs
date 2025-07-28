@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -53,8 +54,10 @@ public class UsersController: Controller
     }
     
     [AllowAnonymous]
-    public IActionResult Login()
+    public IActionResult Login(string message =null)
     {
+        if(message is not null)
+            ViewData["Message"] = message;
         return View();
     }
     
@@ -87,5 +90,73 @@ public class UsersController: Controller
     {
         await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
         return RedirectToAction("Index", "Home");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public ChallengeResult ExternalLogin(string provider, string urlReturn)
+    {
+        var urlRedirect = Url.Action("ExternalLoginCallback", values: new { urlReturn });
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, urlRedirect);
+        return new ChallengeResult(provider, properties);
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> ExternalLoginCallback(string returnUrl, string remoteError = null)
+    {
+        returnUrl = returnUrl ?? Url.Content("~/");
+        var message = "";
+        if (remoteError is not null)
+        {
+            message = $"Error del proveedor externo: {remoteError}";
+            return RedirectToAction("Login",routeValues: new { message });
+        }
+        var info = await _signInManager.GetExternalLoginInfoAsync();
+        if (info is null)
+        {
+            message = "Error cargando la data del login externo";
+            return RedirectToAction("Login",routeValues: new { message });
+        }
+
+        var resultExternalLogin = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
+            isPersistent: true, bypassTwoFactor: true);
+
+        if (resultExternalLogin.Succeeded) // User have account
+        {
+            return LocalRedirect(returnUrl);
+        }
+
+        string email = "";
+
+        if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+        {
+            email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        }
+        else
+        {
+            message = "Error leyendo el email del usuario del proveedor";
+            return RedirectToAction("Login", routeValues: new { message });
+        }
+
+        var user = new IdentityUser { Email = email, UserName = email };
+        
+        var resultCreateUser = await _userManager.CreateAsync(user);
+
+        if (!resultCreateUser.Succeeded)
+        {
+            message = resultCreateUser.Errors.First().Description;
+            return RedirectToAction("Login", routeValues: new { message });
+        }
+        
+        var resultAddLogin = await _userManager.AddLoginAsync(user, info);
+
+        if (resultAddLogin.Succeeded)
+        {
+            await _signInManager.SignInAsync(user,isPersistent:true,info.LoginProvider);
+            return LocalRedirect(returnUrl);
+        }
+
+        message = "Ha ocurrido un error agregando el login";
+        return RedirectToAction("Login",routeValues: new { message });
     }
 }
