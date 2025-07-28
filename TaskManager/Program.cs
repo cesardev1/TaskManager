@@ -19,7 +19,11 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("name=DefaultConnection"));
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication().AddMicrosoftAccount(options =>
+{
+    options.ClientId = builder.Configuration["MicrosoftClientId"];
+    options.ClientSecret = builder.Configuration["MicrosoftSecretId"];
+});
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
