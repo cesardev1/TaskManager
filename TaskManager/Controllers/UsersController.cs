@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskManager.Models;
+using TaskManager.Services;
 
 namespace TaskManager.Controllers;
 
@@ -11,11 +13,15 @@ public class UsersController: Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly ApplicationDbContext _context;
 
-    public UsersController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public UsersController(UserManager<IdentityUser> userManager, 
+                            SignInManager<IdentityUser> signInManager,
+                            ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _context = context;
     }
     
     [AllowAnonymous]
@@ -158,5 +164,45 @@ public class UsersController: Controller
 
         message = "Ha ocurrido un error agregando el login";
         return RedirectToAction("Login",routeValues: new { message });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ListUsers(string message = null)
+    {
+        var users = await _context.Users.Select(u=> new UserViewModel
+        {
+            Email = u.Email
+        }).ToListAsync();
+
+        var model = new UserListViewModel();
+        model.Users = users;
+        model.Message = message;
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PromoteToAdmin(string email)
+    {
+        var user = await _context.Users.Where(u=> u.Email==email).FirstOrDefaultAsync();
+        
+        if(user is null)
+            return NotFound();
+
+        await _userManager.AddToRoleAsync(user, GlobalConstants.AdminRole);
+        
+        return RedirectToAction("ListUsers",routeValues: new { message = "Se agrego el rol Admin a " + email });
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> RemoveAdminRole(string email)
+    {
+        var user = await _context.Users.Where(u=> u.Email==email).FirstOrDefaultAsync();
+        
+        if(user is null)
+            return NotFound();
+
+        await _userManager.RemoveFromRoleAsync(user, GlobalConstants.AdminRole);
+        
+        return RedirectToAction("ListUsers",routeValues: new { message = "Se retiro el rol Admin a " + email });
     }
 }
