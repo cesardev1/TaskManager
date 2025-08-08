@@ -1,6 +1,8 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TaskManager;
@@ -37,8 +39,17 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
     options.AccessDeniedPath = "/Users/Login";
 });
 
+builder.Services.AddLogging();
 
 var app = builder.Build();
+
+var SupportedCultures = new[] { "es", "en" };
+
+app.UseRequestLocalization(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("es");
+    options.SupportedCultures = SupportedCultures.Select(culture => new CultureInfo(culture)).ToList();
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
