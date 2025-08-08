@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using TaskManager;
 
@@ -17,7 +18,7 @@ var userAuthPolicy = new AuthorizationPolicyBuilder()
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new AuthorizeFilter(userAuthPolicy));
-});
+}).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("name=DefaultConnection"));
 
