@@ -167,6 +167,7 @@ public class UsersController: Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = GlobalConstants.AdminRole)]
     public async Task<IActionResult> ListUsers(string message = null)
     {
         var users = await _context.Users.Select(u=> new UserViewModel
@@ -181,6 +182,7 @@ public class UsersController: Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = GlobalConstants.AdminRole)]
     public async Task<IActionResult> PromoteToAdmin(string email)
     {
         var user = await _context.Users.Where(u=> u.Email==email).FirstOrDefaultAsync();
@@ -194,6 +196,7 @@ public class UsersController: Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = GlobalConstants.AdminRole)]
     public async Task<IActionResult> RemoveAdminRole(string email)
     {
         var user = await _context.Users.Where(u=> u.Email==email).FirstOrDefaultAsync();
