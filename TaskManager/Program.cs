@@ -39,16 +39,21 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
     options.AccessDeniedPath = "/Users/Login";
 });
 
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath="Resources";
+});
+
 builder.Services.AddLogging();
 
 var app = builder.Build();
 
-var SupportedCultures = new[] { "es", "en" };
+var supportedCultures = new[] { "es", "en" };
 
 app.UseRequestLocalization(options =>
 {
     options.DefaultRequestCulture = new RequestCulture("es");
-    options.SupportedCultures = SupportedCultures.Select(culture => new CultureInfo(culture)).ToList();
+    options.SupportedUICultures = supportedCultures.Select(culture => new CultureInfo(culture)).ToList();
 });
 
 // Configure the HTTP request pipeline.
