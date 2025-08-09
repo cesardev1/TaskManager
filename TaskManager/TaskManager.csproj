@@ -45,6 +45,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>SharedResources.en.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\Views\Shared\_TranslateJS.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>_TranslateJS.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -67,6 +71,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>SharedResources.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\Views\Shared\_TranslateJS.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>_TranslateJS.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

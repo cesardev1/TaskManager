@@ -19,7 +19,6 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        ViewBag.Greating = _localizer["Hola chiquitin"];
         return View();
     }
 
