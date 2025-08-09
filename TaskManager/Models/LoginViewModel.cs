@@ -4,12 +4,12 @@ namespace TaskManager.Models;
 
 public class LoginViewModel
 {
-    [Required(ErrorMessage = "El correo electrónico es requerido")]
-    [EmailAddress(ErrorMessage = "El correo electrónico no es válido")]
+    [Required(ErrorMessage = "Error.Required")]
+    [EmailAddress(ErrorMessage = "Error.Email")]
     public string Email { get; set; }
-    [Required(ErrorMessage = "La contraseña es requerida")]
+    [Required(ErrorMessage = "Error.Required")]
     [DataType(DataType.Password)]
     public string Password { get; set; }
-    [Display(Name = "Recordarme")]
+    [Display(Name = "Error.RememberMe")]
     public bool RememberMe { get; set; }
 }
