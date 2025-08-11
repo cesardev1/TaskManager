@@ -120,8 +120,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btn:Add-new-task" xml:space="preserve">
+    <value>Agregar nueva tarea</value>
+  </data>
+  <data name="loading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="No-Tasks" xml:space="preserve">
+    <value>No hay tareas para mostrar.</value>
+  </data>
   <data name="PWelcome" xml:space="preserve">
     <value>Aprende sobre como construir apps web con ASP.NET Core.</value>
+  </data>
+  <data name="Title-My-Todos" xml:space="preserve">
+    <value>Mis Tareas</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Bienvenido</value>

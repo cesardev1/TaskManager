@@ -45,9 +45,33 @@ namespace TaskManager.Resources.Views.Home {
             }
         }
         
+        internal static string btn_Add_new_task {
+            get {
+                return ResourceManager.GetString("btn:Add-new-task", resourceCulture);
+            }
+        }
+        
+        internal static string loading {
+            get {
+                return ResourceManager.GetString("loading", resourceCulture);
+            }
+        }
+        
+        internal static string No_Tasks {
+            get {
+                return ResourceManager.GetString("No-Tasks", resourceCulture);
+            }
+        }
+        
         internal static string PWelcome {
             get {
                 return ResourceManager.GetString("PWelcome", resourceCulture);
+            }
+        }
+        
+        internal static string Title_My_Todos {
+            get {
+                return ResourceManager.GetString("Title-My-Todos", resourceCulture);
             }
         }
         
