@@ -50,5 +50,17 @@ namespace TaskManager.Resources.Views.Shared {
                 return ResourceManager.GetString("TestMessage", resourceCulture);
             }
         }
+        
+        internal static string ResourceNotFound {
+            get {
+                return ResourceManager.GetString("ResourceNotFound", resourceCulture);
+            }
+        }
+        
+        internal static string UnexpectError {
+            get {
+                return ResourceManager.GetString("UnexpectError", resourceCulture);
+            }
+        }
     }
 }

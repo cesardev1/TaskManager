@@ -120,4 +120,10 @@
   <data name="TestMessage" xml:space="preserve">
         <value>This is a Test Message</value>
     </data>
+  <data name="ResourceNotFound" xml:space="preserve">
+    <value>Resource not found</value>
+  </data>
+  <data name="UnexpectError" xml:space="preserve">
+    <value>An error has occurred with your request.</value>
+  </data>
 </root>

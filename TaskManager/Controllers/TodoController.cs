@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Entities;
@@ -25,7 +26,7 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<TodoDTO>> Get()
+    public async Task<ActionResult<List<TodoDTO>>> Get()
     {
         var userId = _userServices.GetUserById();
         var todos = await _context.TodoItems

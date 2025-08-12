@@ -24,6 +24,7 @@ async function managerFocusoutTitleTodo(todo){
         todo.id(json.id);
     }else{
         // show error message
+        handleApiError(response);
     }
 }
 
@@ -39,6 +40,7 @@ async function getTodos(){
     });
     
     if(!response.ok){
+        handleApiError(response);
         return;
     }
     
