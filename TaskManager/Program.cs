@@ -50,6 +50,8 @@ builder.Services.AddLocalization(options =>
     options.ResourcesPath="Resources";
 });
 
+builder.Services.AddTransient<IUserServices, UserServices>();
+
 builder.Services.AddLogging();
 
 var app = builder.Build();

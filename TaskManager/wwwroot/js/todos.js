@@ -3,14 +3,26 @@ function addNewTask(){
     $("[name=title-todo]").last().focus();
 }
 
-function managerFocusoutTitleTodo(todo){
-    console.log("Ingresa en funcion");
+async function managerFocusoutTitleTodo(todo){
     const title = todo.title();
     if(!title){
-        console.log("Ingresa en if");
         todoListViewModel.todos.pop();
         return;
     }
-    console.log("Pasa if sin iniciar");
-    todo.id(1);
+    
+    const data = JSON.stringify(title);
+    const response = await fetch(urlTodos, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(response.ok){
+        const json = await response.json();
+        todo.id(json.id);
+    }else{
+        // show error message
+    }
 }

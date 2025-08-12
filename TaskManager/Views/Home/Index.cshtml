@@ -28,6 +28,9 @@
 @section Scripts {
     <script src="~/js/todos.js" asp-append-version="true"></script>
     <script>
+        
+        const urlTodos = "/api/todos";
+        
         function todoListViewModelFn(){
             var self = this;
             self.todos= ko.observableArray([]);
