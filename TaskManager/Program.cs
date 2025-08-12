@@ -29,8 +29,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 builder.Services.AddAuthentication().AddMicrosoftAccount(options =>
 {
-    options.ClientId = builder.Configuration["MicrosoftClientId"];
-    options.ClientSecret = builder.Configuration["MicrosoftSecretId"];
+    options.ClientId = builder.Configuration["MicrosoftClientId"]!;
+    options.ClientSecret = builder.Configuration["MicrosoftSecretId"]!;
 });
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -51,6 +51,7 @@ builder.Services.AddLocalization(options =>
 });
 
 builder.Services.AddTransient<IUserServices, UserServices>();
+builder.Services.AddAutoMapper(cfg=> cfg.LicenseKey= builder.Configuration["AutoMapperLicense"],typeof(Program));
 
 builder.Services.AddLogging();
 

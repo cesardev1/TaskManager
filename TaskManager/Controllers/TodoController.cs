@@ -1,6 +1,9 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Entities;
+using TaskManager.Models;
 using TaskManager.Services;
 
 namespace TaskManager.Controllers;
@@ -10,19 +13,28 @@ public class TodoController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IUserServices _userServices;
+    private readonly IMapper _mapper;
 
-    public TodoController(ApplicationDbContext context,IUserServices userServices)
+    public TodoController(ApplicationDbContext context,
+                            IUserServices userServices,
+                            IMapper mapper)
     {
         _context = context;
         _userServices = userServices;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<List<TodoItem>> Get()
+    public async Task<List<TodoDTO>> Get()
     {
         var userId = _userServices.GetUserById();
-        return await _context.TodoItems.Where(t=> t.CreatedByUserId == userId).ToListAsync();
-        
+        var todos = await _context.TodoItems
+                    .Where(t=> t.CreatedByUserId == userId)
+                    .OrderBy(t=> t.OrderIndex)
+                    .ProjectTo<TodoDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+        return todos;
     }
 
     [HttpPost]
