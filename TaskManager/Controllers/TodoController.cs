@@ -17,6 +17,14 @@ public class TodoController : ControllerBase
         _userServices = userServices;
     }
 
+    [HttpGet]
+    public async Task<List<TodoItem>> Get()
+    {
+        var userId = _userServices.GetUserById();
+        return await _context.TodoItems.Where(t=> t.CreatedByUserId == userId).ToListAsync();
+        
+    }
+
     [HttpPost]
     public async Task<ActionResult<TodoItem>> Post([FromBody] string title)
     {

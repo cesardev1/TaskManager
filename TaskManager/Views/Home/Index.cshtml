@@ -55,10 +55,7 @@
         
         const todoListViewModel = new todoListViewModelFn();
         
-        setTimeout(()=>{
-            //todoListViewModel.todos.push({title:'Tarea 1'});
-            todoListViewModel.loading(false);
-        },100)
+        getTodos();
         
         ko.applyBindings(todoListViewModel, document.getElementById('container-todos-list'));
     </script>

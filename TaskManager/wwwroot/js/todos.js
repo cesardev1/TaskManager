@@ -26,3 +26,29 @@ async function managerFocusoutTitleTodo(todo){
         // show error message
     }
 }
+
+
+async function getTodos(){
+    todoListViewModel.loading(true);
+    
+    const response = await fetch(urlTodos, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(!response.ok){
+        return;
+    }
+    
+    const json = await response.json();
+    console.log(json);
+    todoListViewModel.todos([]);
+    
+    json.forEach(value => {
+        todoListViewModel.todos.push(new todoitemListViewModelFn(value));
+    });
+    
+    todoListViewModel.loading(false);
+}
