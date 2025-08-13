@@ -54,3 +54,48 @@ async function getTodos(){
     
     todoListViewModel.loading(false);
 }
+
+async function updateTodoOrder(){
+    const ids = getTodoIds();
+    console.log("module updateTodoOrder:");
+    console.log(ids);
+    await sendTodoIdsToBackend(ids);
+    
+    const arrayOrder = todoListViewModel.todos.sorted(function(a,b){
+        console.log(ids.indexOf(a.id().toString()))
+        console.log(ids.indexOf(b.id().toString()))
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
+    });
+    
+    todoListViewModel.todos([]);
+    todoListViewModel.todos(arrayOrder);
+}
+
+function getTodoIds(){
+    const ids = $("[name=title-todo]").map(function(){
+        return $(this).attr("data-id");
+    }).get();
+    return ids;
+}
+
+async function sendTodoIdsToBackend(ids){
+    var data = JSON.stringify(ids)
+    console.log("module sendTodoIdsToBackend:");
+    console.log(data);
+    await fetch(`${urlTodos}/order`,{
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+$(function (){
+    $("#reorderable").sortable({
+        axis:'y',
+        stop:async function(){
+            await updateTodoOrder();
+        }
+    })
+})

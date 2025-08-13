@@ -8,12 +8,12 @@
 
 
 <div id="container-todos-list" class="text-center">
-    <div class="text-start" data-bind="foreach: todos">
+    <div id="reorderable" class="text-start" data-bind="foreach: todos">
         <div name="todo" class="border mb-2 p-2" style="cursor: pointer">
             <div data-bind="text: title,hidden: isNew" class="fw-bold"></div>
             
             <input type="text" name="title-todo" autocomplete="off" 
-                   data-bind="value: title,visible: isNew, event: { focusout: managerFocusoutTitleTodo}"/>
+                   data-bind="value: title,visible: isNew,attr:{'data-id':id}, event: { focusout: managerFocusoutTitleTodo}"/>
         </div>
     </div>
     

@@ -64,5 +64,30 @@ public class TodoController : ControllerBase
         return todo;
     }
     
-    
+    [HttpPost("order")]
+    public async Task<IActionResult> Order([FromBody] int[] ids)
+    {
+        var userId = _userServices.GetUserById();
+        
+        var todos = await _context.TodoItems.Where(t=> t.CreatedByUserId == userId).ToListAsync();
+
+        var todosIds = todos.Select(t => t.Id);
+
+        var notUserIds = ids.Except(todosIds).ToList(); 
+        
+        if(notUserIds.Any())
+                return Forbid();
+        
+        var todosDictionary = todos.ToDictionary(t => t.Id);
+
+        for (int i = 0; i < ids.Length; i++)
+        {
+            var id = ids[i];
+            var todo = todosDictionary[id];
+            todo.OrderIndex = i + 1;
+        }
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
 }
