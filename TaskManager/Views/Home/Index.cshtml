@@ -9,7 +9,7 @@
 
 <div id="container-todos-list" class="text-center">
     <div id="reorderable" class="text-start" data-bind="foreach: todos">
-        <div name="todo" class="border mb-2 p-2" style="cursor: pointer">
+        <div name="todo" class="border mb-2 p-2" style="cursor: pointer" data-bind="click: handelClickTodo">
             <div data-bind="text: title,hidden: isNew" class="fw-bold"></div>
             
             <input type="text" name="title-todo" autocomplete="off" 
@@ -25,12 +25,17 @@
     </div>
 </div>
 
+<partial name="_TodoEditModal"/>
+
 @section Scripts {
     <script src="~/js/todos.js" asp-append-version="true"></script>
     <script src="~/js/Utilities.js" asp-append-version="true"></script>
     <script>
         
         const urlTodos = "/api/todos";
+        
+        const modalTodoEdit = document.getElementById("modal-todo-edit");
+        const modalTodoEditBootstrap = new bootstrap.Modal(modalTodoEdit);
         
         function todoListViewModelFn(){
             var self = this;
@@ -54,10 +59,18 @@
             })
         }
         
+        const todoEditVM = {
+            id:0,
+            title: ko.observable(''),
+            description: ko.observable('')
+        }
+        
+        
         const todoListViewModel = new todoListViewModelFn();
         
         getTodos();
         
         ko.applyBindings(todoListViewModel, document.getElementById('container-todos-list'));
+        ko.applyBindings(todoEditVM, document.getElementById('modal-todo-edit'));
     </script>
 }

@@ -90,4 +90,33 @@ public class TodoController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<TodoItem>> Get(int id)
+    {
+        var userId = _userServices.GetUserById();
+        var todo = await _context.TodoItems.FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
+        
+        if(todo is null)
+            return NotFound();
+
+        return todo;
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> TodoEdit(int id, [FromBody] TodoEditDTO todoEditDto)
+    {
+        var userId = _userServices.GetUserById();
+        var todo = await _context.TodoItems.FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
+
+        if (todo is null)
+            return NotFound();
+
+        todo.Title = todoEditDto.Title;
+        todo.Description = todoEditDto.Description;
+        
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
 }

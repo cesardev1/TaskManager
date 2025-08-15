@@ -45,7 +45,6 @@ async function getTodos(){
     }
     
     const json = await response.json();
-    console.log(json);
     todoListViewModel.todos([]);
     
     json.forEach(value => {
@@ -57,13 +56,9 @@ async function getTodos(){
 
 async function updateTodoOrder(){
     const ids = getTodoIds();
-    console.log("module updateTodoOrder:");
-    console.log(ids);
     await sendTodoIdsToBackend(ids);
     
     const arrayOrder = todoListViewModel.todos.sorted(function(a,b){
-        console.log(ids.indexOf(a.id().toString()))
-        console.log(ids.indexOf(b.id().toString()))
         return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
     });
     
@@ -80,8 +75,6 @@ function getTodoIds(){
 
 async function sendTodoIdsToBackend(ids){
     var data = JSON.stringify(ids)
-    console.log("module sendTodoIdsToBackend:");
-    console.log(data);
     await fetch(`${urlTodos}/order`,{
         method: 'POST',
         body: data,
@@ -99,3 +92,67 @@ $(function (){
         }
     })
 })
+
+async function handelClickTodo(todo){
+    if(todo.isNew()){
+        return;
+    }
+    
+    const response = await fetch(`${urlTodos}/${todo.id()}`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(!response.ok){
+        handleApiError(response);
+        return;
+    }
+    
+    const json = await response.json();
+    modalTodoEditBootstrap.show();
+    
+    todoEditVM.id = json.id;
+    todoEditVM.title(json.title);
+    todoEditVM.description(json.description);
+    
+}
+
+
+async function handleChangeTodoEdit(){
+    console.log("Evento change edit");
+    const obj ={
+        id: todoEditVM.id,
+        title: todoEditVM.title(),
+        description: todoEditVM.description()
+    }
+    console.log("todo edit:");
+    console.log(obj);
+    if(!obj.title)
+        return
+    
+    await editFullTodo(obj);
+    const index = todoListViewModel.todos().findIndex(t=>t.id() === obj.id);
+    const todo = todoListViewModel.todos()[index];
+    todo.title(obj.title);
+}
+
+async function editFullTodo(todo){
+    const data = JSON.stringify(todo);
+    
+    const response =await fetch(`${urlTodos}/${todo.id}`,{
+        method: 'PUT',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(!response.ok){
+        handleApiError(response);
+        throw "error";
+    }
+    
+    
+}
