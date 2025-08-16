@@ -119,4 +119,20 @@ public class TodoController : ControllerBase
         return Ok();
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var userId = _userServices.GetUserById();
+        
+        var todo = await _context.TodoItems.FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
+        
+        if(todo is null)
+            return NotFound();
+
+        _context.Remove(todo);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
 }

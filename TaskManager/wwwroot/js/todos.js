@@ -28,7 +28,6 @@ async function managerFocusoutTitleTodo(todo){
     }
 }
 
-
 async function getTodos(){
     todoListViewModel.loading(true);
     
@@ -119,7 +118,6 @@ async function handelClickTodo(todo){
     
 }
 
-
 async function handleChangeTodoEdit(){
     console.log("Evento change edit");
     const obj ={
@@ -153,6 +151,55 @@ async function editFullTodo(todo){
         handleApiError(response);
         throw "error";
     }
+}
+
+function confirmAction({callBackAcept, callBackCancel, title}){
+    Swal.fire({
+        title: title || 'Realmente deseas hacer esto?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, estoy seguro',
+        focusConfirm:true
+    }).then((result)=>{
+        if(result.isConfirmed){
+            callBackAcept();
+        } else if(callBackCancel){
+            callBackCancel();
+        }
+    });
+}
+
+function tryDeleteTodo(todo){
+    modalTodoEditBootstrap.hide();
     
+    confirmAction({
+        callBackAcept: () => {
+            deleteTodo(todo);
+        },
+        callbackCancel: () => {
+            modalTodoEditBootstrap.show();
+        },
+        title: `Desea borrar la tarea ${todo.title()}?`
+    })
+}
+
+async function deleteTodo(todo){
+    const idTodo = todo.id;
+    const response = await fetch(`${urlTodos}/${idTodo}`,{
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
     
+    if(response.ok){
+        const index = getIndexTodoEditing();
+        todoListViewModel.todos.splice(index,1);
+    }
+}
+
+function getIndexTodoEditing(){
+    return todoListViewModel.todos().findIndex(t=>t.id() == todoEditVM.id);
 }
