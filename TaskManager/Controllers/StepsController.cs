@@ -70,5 +70,23 @@ public class StepsController : ControllerBase
         step.IsCompleted = stepCreateDto.IsCompleted;
         await _context.SaveChangesAsync();
         return Ok();
-    }   
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var userId = _userServices.GetUserById();
+        var step = await _context.Steps.Include(p=>p.TodoItem)
+            .FirstOrDefaultAsync(p=>p.Id == id);;
+        
+        if(step is null)
+            return NotFound();
+        
+        if(step.TodoItem.CreatedByUserId != userId)
+            return Forbid();
+        
+        _context.Remove(step);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }

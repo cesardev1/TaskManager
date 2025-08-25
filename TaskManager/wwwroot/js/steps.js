@@ -1,6 +1,5 @@
 function handleClickAddStep(){
     const index = todoEditVM.steps().findIndex(s=>s.isNew);
-    
     if(index !== -1){
         return;
     }
@@ -95,4 +94,31 @@ function handleClickCheckboxStep(step){
     const data = getBodyStep(step);
     updateStep(data,step.id());
     return true;
+}
+
+function handleClickDeleteStep(step) {
+    modalTodoEditBootstrap.hide();
+    confirmAction({
+        callBackAcept: () => {
+            deleteStep(step);
+            modalTodoEditBootstrap.show();
+        },
+        callBackCancel: ()=>{
+            modalTodoEditBootstrap.show();
+        },
+        title: `Desea borrar este paso?`
+    })
+}
+
+async function deleteStep(step){
+    const response = await fetch(`${urlSteps}/${step.id()}`,{
+        method: 'DELETE'
+    });
+    
+    if(!response.ok){
+        handleApiError(response);
+        return;
+    }
+    
+    todoEditVM.steps.remove(function(item) {return item.id == step.id});
 }

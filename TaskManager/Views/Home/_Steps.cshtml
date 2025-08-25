@@ -21,6 +21,7 @@
                 <div class="mt-2" data-bind="{visible: isEditing}">
                     <button class="btn btn-primary" data-bind="{click: handleClickSaveStep}">Guardar</button>
                     <button class="btn btn-secondary" data-bind="{click: handleClickCancelStep}">Cancelar</button>
+                    <button class="btn btn-danger" data-bind="{hidden: isNew, click: handleClickDeleteStep}">Borrar</button>
                 </div>
             </div>
         </div>
