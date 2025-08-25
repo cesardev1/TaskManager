@@ -94,7 +94,9 @@ public class TodoController : ControllerBase
     public async Task<ActionResult<TodoItem>> Get(int id)
     {
         var userId = _userServices.GetUserById();
-        var todo = await _context.TodoItems.FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
+        var todo = await _context.TodoItems
+                            .Include(t=>t.Steps)
+                            .FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
         
         if(todo is null)
             return NotFound();

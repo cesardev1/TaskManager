@@ -110,11 +110,20 @@ async function handelClickTodo(todo){
     }
     
     const json = await response.json();
-    modalTodoEditBootstrap.show();
+    
     
     todoEditVM.id = json.id;
     todoEditVM.title(json.title);
     todoEditVM.description(json.description);
+    
+    todoEditVM.steps([]);
+    
+    json.steps.forEach(step =>{
+        todoEditVM.steps.push(new stepViewModel({...step, isEditing: false}))
+        }
+    );
+
+    modalTodoEditBootstrap.show();
     
 }
 

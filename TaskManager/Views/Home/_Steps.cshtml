@@ -1,0 +1,23 @@
+<label><i class="bi bi-check-square"></i> Pasos de la tarea</label>
+<button class=" btn btn-secondary btn-sm" onclick="handleClickAddStep()">
+    <i class="bi bi-plus"></i>
+</button>
+
+<div data-bind="foreach: steps">
+    <div class="mt-2">
+        <div class="row">
+            <div class="col-1">
+                <input type="checkbox" class="form-check-input" name="chbStep" data-bind="checked: isCompleted" />
+            </div>
+            <div class="col-11">
+                <span data-bind="text: description, hidden: isEditing"></span>
+                <textarea name="txtStepDescription" class="form-control" placeholder="Agregue una descripcción"
+                data-bind="{value: description,visible: isEditing}"></textarea>
+                <div class="mt-2" data-bind="{visible: isEditing}">
+                    <button class="btn btn-primary" data-bind="{click: handleClickSaveStep}">Guardar</button>
+                    <button class="btn btn-secondary" data-bind="{click: handleClickCancelStep}">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
