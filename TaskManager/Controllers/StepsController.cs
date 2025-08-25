@@ -50,4 +50,25 @@ public class StepsController : ControllerBase
         await _context.SaveChangesAsync();
         return step;
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(Guid id, [FromBody] StepCreateDTO stepCreateDto)
+    {
+        var userId = _userServices.GetUserById();
+
+        var step = await _context.Steps
+                                .Include(s => s.TodoItem)
+                                .FirstOrDefaultAsync(s => s.Id == id);
+        
+        if (step is null)
+            return NotFound();
+        
+        if(step.TodoItem.CreatedByUserId != userId)
+            return Forbid();
+        
+        step.Description = stepCreateDto.Description;
+        step.IsCompleted = stepCreateDto.IsCompleted;
+        await _context.SaveChangesAsync();
+        return Ok();
+    }   
 }

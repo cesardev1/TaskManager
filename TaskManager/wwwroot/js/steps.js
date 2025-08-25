@@ -12,7 +12,8 @@ function handleClickCancelStep(step){
     if(step.isNew()){
         todoEditVM.steps.pop();
     } else {
-        
+        step.isEditing(false);
+        step.description(step.lastDescription);
     }
 }
 
@@ -23,10 +24,20 @@ async function handleClickSaveStep(step){
     const todoId = todoEditVM.id;
     const data = getBodyStep(step);
     
+    const description = step.description();
+    
+    if(!description){
+        step.description(step.lastDescription);
+        if(isNew){
+            todoEditVM.steps.pop();
+        }
+        return;
+    }
+    
     if(isNew){
         await insertStep(step,data,todoId);
     } else {
-        
+        await updateStep(data,step.id());
     }
 }
 
@@ -53,4 +64,35 @@ function getBodyStep(step){
         description: step.description(),
         isCompleted: step.isCompleted()
     });
+}
+
+
+function handleClickDescriptionStep(step){
+    step.isEditing(true);
+    step.lastDescription =step.description();
+    $("[name=txtStepDescription]:visible").focus();
+}
+
+async function updateStep(data,id){
+    const response = await fetch(`${urlSteps}/${id}`,{
+        body:data,
+        method:"PUT",
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(!response.ok)
+    {
+        handleApiError(response);
+    }
+}
+
+function handleClickCheckboxStep(step){
+    if(step.isNew())
+        return true;
+    
+    const data = getBodyStep(step);
+    updateStep(data,step.id());
+    return true;
 }
