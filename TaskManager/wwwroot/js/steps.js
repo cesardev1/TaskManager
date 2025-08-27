@@ -148,3 +148,42 @@ async function deleteStep(step){
         todo.stepsDone(todo.stepsDone()-1);
     
 }
+
+async function updateStepOrder(){
+    const ids= getStepsIds();
+    await sendStepsIdsToBackend(ids);
+    
+    const arraySorted  = todoEditVM.steps.sorted(function(a,b){
+        return ids.indexOf(a.id().toString())-ids.indexOf(b.id().toString());
+    });
+    
+    todoEditVM.steps(arraySorted);
+}
+function getStepsIds(){
+    const ids = $("[name=chbStep]").map(function(){
+        return $(this).attr("data-id");
+    }).get();
+    
+    return ids;
+}
+
+async function sendStepsIdsToBackend(ids){
+    var data = JSON.stringify(ids)
+    await fetch(`${urlSteps}/order/${todoEditVM.id}`,{
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+$(function(){
+    $("#draggable-steps").sortable({
+        axis: 'y',
+        stop: async function(){
+            await updateStepOrder();
+        }
+    })
+})
+

@@ -89,4 +89,33 @@ public class StepsController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok();
     }
+
+    [HttpPost("order/{todoId:int}")]
+    public async Task<IActionResult> Order(int todoId, [FromBody] Guid[] ids)
+    {
+        var userId = _userServices.GetUserById();
+        var todo = await _context.TodoItems.FirstOrDefaultAsync(t=> t.Id == todoId && t.CreatedByUserId == userId);
+        
+        if(todo is null)
+            return NotFound();
+        
+        var steps = await _context.Steps.Where(x=> x.TodoItemId == todoId).ToListAsync();
+        var stepsIds = steps.Select(x=>x.Id);
+        
+        var stepIdsNotInToDo = ids.Except(stepsIds).ToList();
+        
+        if(stepIdsNotInToDo.Any())
+            return BadRequest("No todos los pasos están presentes");
+
+        var stepsDictionary = steps.ToDictionary(p => p.Id);
+        
+        for(int i =0; i< ids.Length; i++)
+        {
+            var id = ids[i];
+            var step = stepsDictionary[id];
+            step.OrderIndex = i + 1;
+        }
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }
