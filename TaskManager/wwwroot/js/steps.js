@@ -1,8 +1,8 @@
 function handleClickAddStep(){
     const index = todoEditVM.steps().findIndex(s=>s.isNew);
-    if(index !== -1){
-        return;
-    }
+    // if(index !== -1){
+    //     return;
+    // }
     todoEditVM.steps.push(new stepViewModel({isEditing:true, isCompleted:false}));
     $("[name=txtStepDescription]:visible").focus();
 }
@@ -52,6 +52,13 @@ async function insertStep(step,data,todoId){
     if(response.ok){
         const json = await response.json();
         step.id(json.id);
+        
+        const todo = getTodoEditing();
+        todo.stepsTotal(todo.stepsTotal()+1);
+        
+        if(step.isCompleted()){
+            todo.stepsDone(todo.stepsDone()+1);
+        }
     } else {
         handleApiError(response);
     }
@@ -93,6 +100,18 @@ function handleClickCheckboxStep(step){
     
     const data = getBodyStep(step);
     updateStep(data,step.id());
+    
+    const todo = getTodoEditing();
+    let currentStepDone = todo.stepsDone();
+    
+    if(step.isCompleted()){
+        currentStepDone++;
+    }else{
+        currentStepDone--;
+    }
+    
+    todo.stepsDone(currentStepDone);
+    
     return true;
 }
 
@@ -121,4 +140,11 @@ async function deleteStep(step){
     }
     
     todoEditVM.steps.remove(function(item) {return item.id == step.id});
+    
+    const todo = getTodoEditing();
+    todo.stepsTotal(todo.stepsTotal()-1);
+    
+    if(step.isCompleted())
+        todo.stepsDone(todo.stepsDone()-1);
+    
 }

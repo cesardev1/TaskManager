@@ -212,3 +212,8 @@ async function deleteTodo(todo){
 function getIndexTodoEditing(){
     return todoListViewModel.todos().findIndex(t=>t.id() == todoEditVM.id);
 }
+
+function getTodoEditing(){
+    const index = getIndexTodoEditing();
+    return todoListViewModel.todos()[index];
+}

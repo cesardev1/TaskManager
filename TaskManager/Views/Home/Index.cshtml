@@ -12,6 +12,12 @@
         <div name="todo" class="border mb-2 p-2" style="cursor: pointer" data-bind="click: handelClickTodo">
             <div data-bind="text: title,hidden: isNew" class="fw-bold"></div>
             
+            <div name="steps-resume" data-bind="visible:stepsTotal() > 0">
+                <span data-bind="text:stepsDone"></span> /
+                <span data-bind="text: stepsTotal"></span>
+                <span data-bind="text: percentDone"></span>
+            </div>
+            
             <input type="text" name="title-todo" autocomplete="off" 
                    data-bind="value: title,visible: isNew,attr:{'data-id':id}, event: { focusout: managerFocusoutTitleTodo}"/>
         </div>
@@ -53,13 +59,22 @@
             });
         }
         
-        function todoitemListViewModelFn({id, title}){
+        function todoitemListViewModelFn({id, title,stepsTotal,stepsDone}){
             var self = this;
             self.id = ko.observable(id);
             self.title = ko.observable(title);
+            
+            self.stepsTotal = ko.observable(stepsTotal);
+            self.stepsDone = ko.observable(stepsDone);
+            
             self.isNew = ko.pureComputed(function(){
                 return self.id() === 0;
             })
+            
+            self.percentDone = ko.pureComputed(function(){
+                const calc = Math.round(self.stepsDone()*1.0/self.stepsTotal()*100);
+                return `(${calc}%)`
+            });
         }
         
         const todoEditVM = {

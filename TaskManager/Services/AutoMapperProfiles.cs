@@ -8,7 +8,11 @@ public class AutoMapperProfiles:Profile
 {
     public AutoMapperProfiles()
     {
-        CreateMap<TodoItem,TodoDTO>();
+        CreateMap<TodoItem,TodoDTO>()
+            .ForMember(dto => dto.StepsTotal, ent 
+                => ent.MapFrom(x => x.Steps.Count()))
+            .ForMember(dto => dto.StepsDone, ent 
+                => ent.MapFrom(x => x.Steps.Where(p=>p.IsCompleted).Count()));
     }
     
 }
