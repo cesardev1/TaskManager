@@ -217,7 +217,7 @@ csx/
 *.build.csdef
 
 # Microsoft Azure Emulator
-ecf/
+ecff/
 rcf/
 
 # Windows Store app package directories and files
@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+TaskManager/wwwroot/attachments/

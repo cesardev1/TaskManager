@@ -1,0 +1,16 @@
+<label><i class="bi bi-paperclip"></i>Archivos adjuntos</label>
+<button onclick="handleClickAddAttachedFile()"><i class="bi bi-plus"></i></button>
+<input type="file"
+       onchange="handleFileSelected(event)"
+       id="FileToDo" multiple style="display: none"/>
+
+<div data-bind="foreach:attachments">
+    <div>
+        <div style="cursor: pointer" data-bind="text: title"></div>
+        <div>
+            Agregado <span data-bind="text: published"></span> -
+            <span class="fw-bold" style="cursor: pointer"> Borrar </span> -
+            <span class="fw-bold" style="cursor: pointer"> Descargar </span>
+        </div>
+    </div>
+</div>

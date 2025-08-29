@@ -16,6 +16,7 @@ var userAuthPolicy = new AuthorizationPolicyBuilder()
     .RequireAuthenticatedUser()
     .Build(); 
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
 {
@@ -28,6 +29,10 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;  // ignore cycles references in json
 });
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("name=DefaultConnection"));
 
@@ -56,6 +61,9 @@ builder.Services.AddLocalization(options =>
 
 builder.Services.AddTransient<IUserServices, UserServices>();
 builder.Services.AddAutoMapper(cfg=> cfg.LicenseKey= builder.Configuration["AutoMapperLicense"],typeof(Program));
+builder.Services.AddTransient<IFileStore,AzureFilesRepository>();
+//builder.Services.AddTransient<IFileStore,LocalFilesRepository>();
+
 
 builder.Services.AddLogging();
 
@@ -78,6 +86,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -85,6 +99,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapControllers();
 
 app.MapControllerRoute(
         name: "default",

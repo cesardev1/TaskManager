@@ -18,10 +18,14 @@
                             <textarea type="text" class="form-control" rows="4" 
                                     data-bind="value:description, event: {change: handleChangeTodoEdit}"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <partial name="_Steps"/>
+                        </div>
+                        <div class="mb-3">
+                            <partial name="_Attachments"/>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <partial name="_Steps"/>
-                    </div>
+                    
                     <div class="col-lg-3">
                         <button data-bind="{click: tryDeleteTodo}"
                             class="btn btn-secondary mb-2 w-100 text-start">
