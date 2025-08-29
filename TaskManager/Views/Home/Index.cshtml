@@ -84,7 +84,7 @@
             title: ko.observable(''),
             description: ko.observable(''),
             steps: ko.observableArray([]),
-            attachments: ko.observable([]),
+            attachments: ko.observableArray([]),
         }
         
         function stepViewModel({id,description,isCompleted,isEditing}){
@@ -102,6 +102,16 @@
         }
         
         const todoListViewModel = new todoListViewModelFn();
+        
+        function fileAttachedViewModel({id,title,published, isEditing,indexOrder,url}){
+            var self =this;
+            self.id=id;
+            self.title=ko.observable(title||'');
+            self.published = published;
+            self.isEditing = ko.observable(isEditing);
+            self.indexOrder = indexOrder;
+            self.url = url;
+        }
         
         getTodos();
         

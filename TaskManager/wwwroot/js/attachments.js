@@ -24,6 +24,21 @@ async function handleFileSelected(event){
     }
     
     const json = await response.json();
-    console.log(json);
+    prepareAttachments(json)
     inputFileToDo.value = null;
+}
+
+
+function prepareAttachments(attachments){
+    
+    attachments.forEach(attachment =>{
+        let createdAt = attachment.createdAt;
+        if(createdAt.indexOf('Z')===-1){
+            createdAt += 'Z';
+        }
+        const createdAtDate = new Date(createdAt);
+        attachment.published = createdAtDate.toLocaleDateString();
+        
+        todoEditVM.attachments.push(attachment);
+    });
 }

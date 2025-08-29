@@ -122,7 +122,9 @@ async function handelClickTodo(todo){
         todoEditVM.steps.push(new stepViewModel({...step, isEditing: false}))
         }
     );
-
+    todoEditVM.attachments([]);
+    prepareAttachments(json.fileAttachments);
+    
     modalTodoEditBootstrap.show();
     
 }

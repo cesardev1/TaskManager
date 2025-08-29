@@ -96,6 +96,7 @@ public class TodoController : ControllerBase
         var userId = _userServices.GetUserById();
         var todo = await _context.TodoItems
                             .Include(t=>t.Steps.OrderBy(p=>p.OrderIndex))
+                            .Include(t=> t.FileAttachments.OrderBy(p=>p.OrderIndex))
                             .FirstOrDefaultAsync(t=>t.Id == id && t.CreatedByUserId == userId);
         
         if(todo is null)
