@@ -39,6 +39,37 @@ function prepareAttachments(attachments){
         const createdAtDate = new Date(createdAt);
         attachment.published = createdAtDate.toLocaleDateString();
         
-        todoEditVM.attachments.push(attachment);
+        todoEditVM.attachments.push(new fileAttachedViewModel({...attachment, isEditing: false}));
     });
+}
+
+let titleFileAttachedPrevious;
+function handleClickTitleFileAttached(fileAttached){
+    fileAttached.isEditing(true);
+    titleFileAttachedPrevious = fileAttached.title();
+    $("[name='txtFileTitle']:visible").focus();
+}
+
+async function handleFocusoutTitleFileAttached(fileAttached){
+    fileAttached.isEditing(false);
+    const idTodo = fileAttached.id;
+    
+    if(!fileAttached.title())
+        fileAttached.title(titleFileAttachedPrevious);
+    
+    if(fileAttached.title() === titleFileAttachedPrevious)
+        return;
+    
+    const data = JSON.stringify(fileAttached.title())
+    const response = await fetch(`${urlAttachments}/${idTodo}`,{
+        method: 'PUT',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    if(!response.ok){
+        handleApiError(response);
+    }
 }

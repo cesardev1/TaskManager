@@ -60,4 +60,23 @@ public class FilesController : ControllerBase
 
         return attachments.ToList();
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(Guid id, [FromBody] string title)
+    {
+        var userId = _userServices.GetUserById();
+        var fileAttached = await _context.FileAttachments
+                                    .Include(a => a.TodoItem)
+                                    .FirstOrDefaultAsync(a => a.Id == id);
+        
+        if(fileAttached is null)
+            return NotFound();
+        
+        if(fileAttached.TodoItem.CreatedByUserId != userId)
+            return Forbid();
+        
+        fileAttached.Title = title;
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }

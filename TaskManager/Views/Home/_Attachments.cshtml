@@ -6,7 +6,11 @@
 
 <div data-bind="foreach:attachments">
     <div>
-        <div style="cursor: pointer" data-bind="text: title"></div>
+        <div style="cursor: pointer" class="fw-bold text-bg-light text-primary" data-bind="text: title, hidden: isEditing, click: handleClickTitleFileAttached"></div>
+        <div data-bind="visible: isEditing, event: {focusout: handleFocusoutTitleFileAttached}">
+            <input name="txtFileTitle" type="text" class="form-control"
+                   data-bind="value: title,attr:{'data-id':id}"/>
+        </div>
         <div>
             Agregado <span data-bind="text: published"></span> -
             <span class="fw-bold" style="cursor: pointer"> Borrar </span> -
