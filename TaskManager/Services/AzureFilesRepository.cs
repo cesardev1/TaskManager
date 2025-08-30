@@ -12,7 +12,7 @@ public class AzureFilesRepository : IFileStore
         _connectionString = configuration.GetConnectionString("AzureStorageConnectionString");
     }
 
-    public async Task Delete(string path, string container)
+    public async Task Delete(string container, string path)
     {
         if (string.IsNullOrEmpty(path))
             return;

@@ -36,7 +36,6 @@ public class FilesController : ControllerBase
             return Forbid();
         
         var existAttachments = await _context.FileAttachments.AnyAsync(a=>a.TodoItemId == todoId);
-        
         var orderMax = 0;
 
         if (existAttachments)
@@ -77,6 +76,26 @@ public class FilesController : ControllerBase
         
         fileAttached.Title = title;
         await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var userId = _userServices.GetUserById();
+        var fileAttached = await _context.FileAttachments
+                                    .Include(a => a.TodoItem)
+                                    .FirstOrDefaultAsync(a => a.Id == id);
+        
+        if(fileAttached is null)
+            return NotFound();
+        
+        if(fileAttached.TodoItem.CreatedByUserId != userId)
+            return Forbid();
+        
+        _context.Remove(fileAttached);
+        await _context.SaveChangesAsync();
+        await _fileStore.Delete(ContainerName, fileAttached.Url);
         return Ok();
     }
 }

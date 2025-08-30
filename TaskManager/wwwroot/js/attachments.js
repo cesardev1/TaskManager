@@ -7,7 +7,6 @@ function handleClickAddAttachedFile(){
 async function handleFileSelected(event){
     const files = event.target.files;
     const filesArray = Array.from(files);
-    
     const idTodo = todoEditVM.id;
     const formData=new FormData();
     for(var i=0; i<filesArray.length; i++){
@@ -17,7 +16,6 @@ async function handleFileSelected(event){
         method: 'POST',
         body: formData
     });
-    
     if(!response.ok){
         handleApiError(response);
         return;
@@ -72,4 +70,34 @@ async function handleFocusoutTitleFileAttached(fileAttached){
     if(!response.ok){
         handleApiError(response);
     }
+}
+
+function handleClickDeleteFileAttached(fileAttached){
+    modalTodoEditBootstrap.hide();
+    
+    confirmAction({
+        callBackAcept: ()=> {
+            deleteFileAttached(fileAttached);
+            modalTodoEditBootstrap.show();
+        },
+        callBackCancel: () => {
+            modalTodoEditBootstrap.show();
+        },
+        title: `Desea borrar el archivo adjunto?`
+    });
+}
+
+async function deleteFileAttached(fileAttached){
+    const response = await fetch(`${urlAttachments}/${fileAttached.id}`,{
+        method: 'DELETE'
+    });
+    
+    if(!response.ok){
+        handleApiError(response);
+        return;
+    }
+    
+    todoEditVM.attachments.remove(function (item) {
+        return item.id == fileAttached.id;
+    });
 }

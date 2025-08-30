@@ -1,5 +1,5 @@
 <label><i class="bi bi-paperclip"></i>Archivos adjuntos</label>
-<button onclick="handleClickAddAttachedFile()"><i class="bi bi-plus"></i></button>
+<button class="btn btn-secondary btn-sm" onclick="handleClickAddAttachedFile()"><i class="bi bi-plus"></i></button>
 <input type="file"
        onchange="handleFileSelected(event)"
        id="FileToDo" multiple style="display: none"/>
@@ -13,7 +13,8 @@
         </div>
         <div>
             Agregado <span data-bind="text: published"></span> -
-            <span class="fw-bold" style="cursor: pointer"> Borrar </span> -
+            <span class="fw-bold" style="cursor: pointer"
+                  data-bind="click: handleClickDeleteFileAttached"> Borrar </span> -
             <span class="fw-bold" style="cursor: pointer"> Descargar </span>
         </div>
     </div>
